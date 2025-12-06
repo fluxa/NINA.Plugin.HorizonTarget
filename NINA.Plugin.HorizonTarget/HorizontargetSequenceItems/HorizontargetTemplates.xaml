@@ -1,0 +1,203 @@
+<ResourceDictionary
+    x:Class="Fluxa.NINA.HorizonTarget.HorizontargetSequenceItems.HorizontargetTemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
+    xmlns:local="clr-namespace:Fluxa.NINA.HorizonTarget.HorizontargetSequenceItems">
+
+    <!-- Template for FetchEphemerisInstruction -->
+    <DataTemplate DataType="{x:Type local:FetchEphemerisInstruction}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel>
+                    <!-- Target Name -->
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" MinWidth="150"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Target Name:" 
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Grid.Column="1" 
+                                 Text="{Binding TargetName, UpdateSourceTrigger=PropertyChanged}" 
+                                 VerticalAlignment="Center"
+                                 ToolTip="Comet or asteroid name (e.g., 'C/2025 R2')"/>
+                    </Grid>
+
+                    <!-- Duration -->
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" MinWidth="150"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Duration (h):" 
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Grid.Column="1" 
+                                 Text="{Binding DurationHours, UpdateSourceTrigger=PropertyChanged}" 
+                                 VerticalAlignment="Center"
+                                 ToolTip="Duration in hours (1-48)"/>
+                    </Grid>
+
+                    <!-- Step Size -->
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" MinWidth="150"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Step (min):" 
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Grid.Column="1" 
+                                 Text="{Binding StepMinutes, UpdateSourceTrigger=PropertyChanged}" 
+                                 VerticalAlignment="Center"
+                                 ToolTip="Time step in minutes (1-60)"/>
+                    </Grid>
+
+                    <!-- Ephemeris Status Info -->
+                    <Border Margin="5" Padding="8"
+                            Background="#E5F5E5" BorderBrush="#4CAF50" BorderThickness="1"
+                            CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasEphemerisData}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel>
+                            <TextBlock Text="✓ Ephemeris Data Available" 
+                                       FontWeight="Bold" Foreground="#2E7D32" Margin="0,0,0,2"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Points: " FontSize="11" Foreground="#2E7D32"/>
+                                <TextBlock Text="{Binding CachedEphemerisCount}" FontSize="11" Foreground="#2E7D32"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <!-- Template for TrackMovingTargetInstruction -->
+    <DataTemplate DataType="{x:Type local:TrackMovingTargetInstruction}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel>
+                    <!-- Ephemeris Status Warning -->
+                    <Border Margin="5" Padding="8"
+                            Background="#FFF3E0" BorderBrush="#FF9800" BorderThickness="1"
+                            CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasEphemerisData}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="⚠ No ephemeris data available. Add 'Fetch Ephemeris from HORIZONS' instruction before this one." 
+                                   FontSize="11" Foreground="#E65100" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <!-- Ephemeris Status Info -->
+                    <Border Margin="5" Padding="8"
+                            Background="#E5F5E5" BorderBrush="#4CAF50" BorderThickness="1"
+                            CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasEphemerisData}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel>
+                            <TextBlock Text="✓ Ready to Track" 
+                                       FontWeight="Bold" Foreground="#2E7D32" Margin="0,0,0,2"/>
+                            <TextBlock Text="{Binding CachedTargetName, StringFormat='Target: {0}'}" 
+                                       FontSize="11" Foreground="#2E7D32"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <!-- Template for TrackMovingTargetTrigger -->
+    <DataTemplate DataType="{x:Type local:TrackMovingTargetTrigger}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel>
+                    <!-- Drift Threshold -->
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" MinWidth="150"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Drift Threshold (arcsec):" 
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Grid.Column="1" 
+                                 Text="{Binding DriftThresholdArcsec, UpdateSourceTrigger=PropertyChanged}" 
+                                 VerticalAlignment="Center"
+                                 ToolTip="Maximum allowed drift before slewing (0.1-3600 arcsec)"/>
+                    </Grid>
+
+                    <!-- Ephemeris Status Warning -->
+                    <Border Margin="5" Padding="8"
+                            Background="#FFF3E0" BorderBrush="#FF9800" BorderThickness="1"
+                            CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasEphemerisData}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="⚠ No ephemeris data available. Add 'Fetch Ephemeris from HORIZONS' instruction before using this trigger." 
+                                   FontSize="11" Foreground="#E65100" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <!-- Ephemeris Status Info -->
+                    <Border Margin="5" Padding="8"
+                            Background="#E5F5E5" BorderBrush="#4CAF50" BorderThickness="1"
+                            CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasEphemerisData}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel>
+                            <TextBlock Text="✓ Trigger Ready" 
+                                       FontWeight="Bold" Foreground="#2E7D32" Margin="0,0,0,2"/>
+                            <TextBlock Text="{Binding CachedTargetName, StringFormat='Target: {0}'}" 
+                                       FontSize="11" Foreground="#2E7D32"/>
+                            <TextBlock Text="Will check drift before each instruction" 
+                                       FontSize="10" Foreground="#2E7D32" FontStyle="Italic" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <!-- SVG Icon -->
+    <GeometryGroup x:Key="HorizonTargetSVG">
+        <PathGeometry Figures="M 0.00001,0.349426L 0.00001,421.333L 625.953,421.333L 625.953,0.349426M 15.12,15.4694L 610.839,15.4694L 610.839,406.213L 15.12,406.213" />
+        <PathGeometry Figures="M 312.276,113.647C 296.183,113.224 280.485,120.109 265.011,132.781C 249.537,145.453 233.833,164.005 216.543,188.573C 181.953,237.709 141.089,311.073 86.8653,409.609L 101.464,417.641C 155.667,319.141 196.527,245.964 230.167,198.172C 246.991,174.276 262.027,156.771 275.568,145.677C 289.109,134.589 300.709,130.011 311.833,130.303C 322.959,130.595 334.657,135.844 348.131,147.563C 361.604,159.276 376.453,177.308 393.005,201.5C 426.104,249.891 466.1,322.781 519.157,419.229L 533.751,411.199C 480.704,314.761 440.724,241.745 406.756,192.095C 389.776,167.271 374.313,148.251 359.063,134.989C 343.813,121.729 328.371,114.073 312.276,113.647 Z " />
+    </GeometryGroup>
+</ResourceDictionary>
